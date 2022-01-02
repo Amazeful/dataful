@@ -17,7 +17,6 @@ const (
 
 type Database interface {
 	Disconnect(ctx context.Context) error
-	Collection(c Collection) *mongo.Collection
 	Repository(db DBName, col Collection) Repository
 }
 
