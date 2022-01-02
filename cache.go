@@ -17,10 +17,20 @@ type Redis struct {
 	c *redis.Client
 }
 
-func NewRedis(rc *redis.Client) *Redis {
-	return &Redis{
-		c: rc,
+func NewRedis(ctx context.Context, redisURI string, redisPassword string) (*Redis, error) {
+	redis := redis.NewClient(&redis.Options{
+		Addr:     redisURI,
+		Password: redisPassword,
+		DB:       0,
+	})
+	rx := redis.Ping(ctx)
+	if rx.Err() != nil {
+		return nil, rx.Err()
 	}
+
+	return &Redis{
+		c: redis,
+	}, nil
 }
 
 func (r *Redis) Get(ctx context.Context, key string, document interface{}) error {
