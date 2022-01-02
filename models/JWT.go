@@ -44,7 +44,8 @@ func (j *JWT) Encode(sessionId string, expiry time.Time) (string, error) {
 	return string(payload), nil
 }
 
-//Decode parses and verifies a JWT
+//Decode parses a token using provided jwt sign key and algorithm.
+//It also validates the claims of the token.
 func (j *JWT) Decode(tokenString string) (jwt.Token, error) {
 	t, err := jwt.Parse([]byte(tokenString), jwt.WithVerify(j.algorithm, j.signKey))
 	if err != nil {
