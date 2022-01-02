@@ -26,14 +26,16 @@ type Channel struct {
 	Live            bool      `bson:"live" json:"live"`
 	Shard           int       `bson:"shard" json:"shard"`
 	Authenticated   bool      `bson:"authenticated" json:"authenticated"`
-	StartedAt       time.Time `bson:"startedAt,omitempty" json:"startedAt"`
-	EndedAt         time.Time `bson:"endedAt,omitempty" json:"endedAt"`
+	StartedAt       time.Time `bson:"startedAt,omitempty" json:"startedAt,omitempty"`
+	EndedAt         time.Time `bson:"endedAt,omitempty" json:"endedAt,omitempty"`
 	Moderator       bool      `bson:"moderator" json:"moderator"`
 }
 
 func NewChannel(r dataful.Repository) *Channel {
 	return &Channel{
 		BaseModel: dataful.NewBaseModel(r),
+		Joined:    true,
+		Prefix:    "!",
 	}
 }
 
