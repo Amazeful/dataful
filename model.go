@@ -6,13 +6,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+//Model interface.
 type Model interface {
 	Created()
 	Updated()
-	SetId(id interface{})
+	SetID(id interface{})
 	SetLoaded(loaded bool)
 }
 
+//BaseModel includes fields shared by all models.
 type BaseModel struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	CreatedAt time.Time          `bson:"createdAt" json:"createdAt"`
@@ -22,31 +24,38 @@ type BaseModel struct {
 	isLoaded bool
 }
 
+//NewBaseModel provides a new base model with given repository.
 func NewBaseModel(r Repository) BaseModel {
 	return BaseModel{r: r}
 }
 
+//R returns model repository.
 func (bm *BaseModel) R() Repository {
 	return bm.r
 }
 
+//Created populates createdat and updatedat fields.
 func (bm *BaseModel) Created() {
 	bm.CreatedAt = time.Now().UTC()
 	bm.UpdatedAt = time.Now().UTC()
 }
 
+//Updated populates updatedat fields.
 func (bm *BaseModel) Updated() {
 	bm.UpdatedAt = time.Now().UTC()
 }
 
-func (bm *BaseModel) SetId(id interface{}) {
+//SetId sets the object id field of the model.
+func (bm *BaseModel) SetID(id interface{}) {
 	bm.ID = id.(primitive.ObjectID)
 }
 
+//SetLoaded sets a model's loaded flag.
 func (bm *BaseModel) SetLoaded(loaded bool) {
 	bm.isLoaded = loaded
 }
 
+//Loaded returns a flag indicating if the model was successfully loaded from db.
 func (bm *BaseModel) Loaded() bool {
 	return bm.isLoaded
 }

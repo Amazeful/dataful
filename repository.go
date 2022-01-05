@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+//Repository interface.
 type Repository interface {
 	InsertOne(ctx context.Context, document Model, opts ...*options.InsertOneOptions) error
 	FindOne(ctx context.Context, filter bson.M, document Model, opts ...*options.FindOneOptions) error
@@ -17,16 +18,19 @@ type Repository interface {
 	DeleteOne(ctx context.Context, filter bson.M, opts ...*options.DeleteOptions) error
 }
 
+//MongoRepository implements the repository interface.
 type MongoRepository struct {
 	c *mongo.Collection
 }
 
+//NewRepository returns a new mongo repository.
 func NewRepository(c *mongo.Collection) *MongoRepository {
 	return &MongoRepository{
 		c: c,
 	}
 }
 
+//FindOne finds one document from db.
 func (r *MongoRepository) FindOne(ctx context.Context, filter bson.M, document Model, opts ...*options.FindOneOptions) error {
 	err := r.c.FindOne(ctx, filter, opts...).Decode(document)
 	if err == mongo.ErrNoDocuments {
@@ -38,6 +42,7 @@ func (r *MongoRepository) FindOne(ctx context.Context, filter bson.M, document M
 	return nil
 }
 
+//FindAll finds all documents
 func (r *MongoRepository) FindAll(ctx context.Context, filter bson.M, results []Model, opts ...*options.FindOptions) error {
 	cursor, err := r.c.Find(ctx, filter, opts...)
 	if err != nil {
@@ -47,12 +52,10 @@ func (r *MongoRepository) FindAll(ctx context.Context, filter bson.M, results []
 	if err != nil {
 		return err
 	}
-	for _, result := range results {
-		result.SetLoaded(true)
-	}
 	return nil
 }
 
+//ReplaceOne replaced one document in db.
 func (r *MongoRepository) ReplaceOne(ctx context.Context, filter bson.M, replacement Model, opts ...*options.ReplaceOptions) error {
 	updateResult, err := r.c.ReplaceOne(ctx, filter, replacement, opts...)
 	if err != nil {
@@ -64,17 +67,19 @@ func (r *MongoRepository) ReplaceOne(ctx context.Context, filter bson.M, replace
 	return nil
 }
 
+//InsertOne inserts one model to db.
 func (r *MongoRepository) InsertOne(ctx context.Context, document Model, opts ...*options.InsertOneOptions) error {
 	insertResult, err := r.c.InsertOne(ctx, document, opts...)
 	if err != nil {
 		return err
 	}
 
-	document.SetId(insertResult.InsertedID)
+	document.SetID(insertResult.InsertedID)
 	document.SetLoaded(true)
 	return nil
 }
 
+//DeleteOne deletes one document on db.
 func (r *MongoRepository) DeleteOne(ctx context.Context, filter bson.M, opts ...*options.DeleteOptions) error {
 	result, err := r.c.DeleteOne(ctx, filter, opts...)
 	if err != nil {

@@ -8,15 +8,18 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
+//Cache interface.
 type Cache interface {
 	Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error
 	Get(ctx context.Context, key string, document interface{}) error
 }
 
+//Redis implements cache interface.
 type Redis struct {
 	c *redis.Client
 }
 
+//NewRedis initializes and returns a new redis client.
 func NewRedis(ctx context.Context, redisURI string, redisPassword string) (*Redis, error) {
 	redis := redis.NewClient(&redis.Options{
 		Addr:     redisURI,
@@ -33,6 +36,7 @@ func NewRedis(ctx context.Context, redisURI string, redisPassword string) (*Redi
 	}, nil
 }
 
+//Get gets data from cache and unmarshals the data to provided document.
 func (r *Redis) Get(ctx context.Context, key string, document interface{}) error {
 	result := r.c.Get(ctx, key)
 	if result.Err() != nil {
@@ -51,6 +55,7 @@ func (r *Redis) Get(ctx context.Context, key string, document interface{}) error
 	return nil
 }
 
+//Set marshals the given value and adds it to cache.
 func (r *Redis) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
 	data, err := json.Marshal(value)
 	if err != nil {

@@ -3,6 +3,7 @@ module github.com/Amazeful/dataful
 go 1.17
 
 require (
+	github.com/Amazeful/helix v1.25.1-0.20211227025021-0ab38f39a674
 	github.com/lestrrat-go/jwx v1.2.14
 	github.com/rs/xid v1.3.0
 	github.com/stretchr/testify v1.7.0
@@ -13,6 +14,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.0-20210816181553-5444fa50b93d // indirect
 	github.com/goccy/go-json v0.8.1 // indirect
+	github.com/golang-jwt/jwt/v4 v4.0.0 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/lestrrat-go/backoff/v2 v2.0.8 // indirect
 	github.com/lestrrat-go/blackmagic v1.0.0 // indirect
