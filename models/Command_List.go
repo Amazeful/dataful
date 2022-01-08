@@ -23,17 +23,15 @@ func NewCommandList(r dataful.Repository) *CommandList {
 
 //LoadAllByChannel gets all commands for given channel.
 func (cl *CommandList) LoadAllByChannel(ctx context.Context, channel primitive.ObjectID) error {
-	err := cl.r.FindAll(ctx, bson.M{"channel": channel}, cl.List)
-	if err != nil {
-		return err
-	}
-	cl.setLoaded()
-	return nil
+	return cl.r.FindAll(ctx, bson.M{"channel": channel}, cl)
 }
 
-func (cl *CommandList) setLoaded() {
+func (cl *CommandList) SetLoaded() {
 	for _, commond := range cl.List {
 		commond.SetLoaded(true)
 		commond.SetR(cl.r)
 	}
+}
+func (cl *CommandList) GetList() interface{} {
+	return cl.List
 }

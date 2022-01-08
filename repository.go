@@ -14,7 +14,7 @@ type Repository interface {
 	InsertOne(ctx context.Context, document Model, opts ...*options.InsertOneOptions) error
 	FindOne(ctx context.Context, filter bson.M, document Model, opts ...*options.FindOneOptions) error
 	ReplaceOne(ctx context.Context, filter bson.M, replacement Model, opts ...*options.ReplaceOptions) error
-	FindAll(ctx context.Context, filter bson.M, list interface{}, opts ...*options.FindOptions) error
+	FindAll(ctx context.Context, filter bson.M, list ModelList, opts ...*options.FindOptions) error
 	DeleteOne(ctx context.Context, filter bson.M, opts ...*options.DeleteOptions) error
 }
 
@@ -43,15 +43,16 @@ func (r *MongoRepository) FindOne(ctx context.Context, filter bson.M, document M
 }
 
 //FindAll finds all documents
-func (r *MongoRepository) FindAll(ctx context.Context, filter bson.M, list interface{}, opts ...*options.FindOptions) error {
+func (r *MongoRepository) FindAll(ctx context.Context, filter bson.M, list ModelList, opts ...*options.FindOptions) error {
 	cursor, err := r.c.Find(ctx, filter, opts...)
 	if err != nil {
 		return err
 	}
-	err = cursor.All(ctx, list)
+	err = cursor.All(ctx, list.GetList())
 	if err != nil {
 		return err
 	}
+	list.SetLoaded()
 	return nil
 }
 
