@@ -39,15 +39,15 @@ func NewChannel(r dataful.Repository) *Channel {
 	}
 }
 
-func (c *Channel) FindBylId(ctx context.Context, id primitive.ObjectID) error {
+func (c *Channel) LoadBylId(ctx context.Context, id primitive.ObjectID) error {
 	return c.R().FindOne(ctx, bson.M{"_id": id}, c)
 }
 
-func (c *Channel) FindByChannelName(ctx context.Context, name string) error {
+func (c *Channel) LoadByChannelName(ctx context.Context, name string) error {
 	return c.R().FindOne(ctx, bson.M{"broadcasterName": name}, c)
 }
 
-func (c *Channel) FindByChannelId(ctx context.Context, channelId string) error {
+func (c *Channel) LoadByChannelId(ctx context.Context, channelId string) error {
 	return c.R().FindOne(ctx, bson.M{"channelId": channelId}, c)
 }
 

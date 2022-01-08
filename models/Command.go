@@ -11,6 +11,7 @@ import (
 
 type Command struct {
 	dataful.BaseModel `bson:",inline"`
+	Channel           primitive.ObjectID `bson:"channel" json:"channel"`
 
 	Name       string                        `bson:"name" json:"name"`
 	Enabled    bool                          `bson:"enabled" json:"enabled"`
@@ -22,7 +23,6 @@ type Command struct {
 	HasVar     bool                          `bson:"hasVar" json:"-"`
 	Attributes embeddables.CommandAttributes `bson:"attributes,omitempty" json:"attributes"`
 	Timer      embeddables.Timer             `bson:"timer,omitempty" json:"timer"`
-	Channel    primitive.ObjectID            `bson:"channel" json:"channel"`
 }
 
 func NewCommand(r dataful.Repository) *Command {

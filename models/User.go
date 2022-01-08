@@ -33,11 +33,11 @@ func NewUser(r dataful.Repository) *User {
 	}
 }
 
-func (u *User) FindBylId(ctx context.Context, id primitive.ObjectID) error {
+func (u *User) LoadBylId(ctx context.Context, id primitive.ObjectID) error {
 	return u.R().FindOne(ctx, bson.M{"_id": id}, u)
 }
 
-func (u *User) FindByUserId(ctx context.Context, userId string) error {
+func (u *User) LoadByUserId(ctx context.Context, userId string) error {
 	return u.R().FindOne(ctx, bson.M{"userId": userId}, u)
 
 }
