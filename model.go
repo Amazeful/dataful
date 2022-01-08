@@ -55,6 +55,12 @@ func (bm *BaseModel) SetLoaded(loaded bool) {
 	bm.isLoaded = loaded
 }
 
+//SetR sets a model's repository.
+//Only use this in model list.
+func (bm *BaseModel) SetR(r Repository) {
+	bm.r = r
+}
+
 //Loaded returns a flag indicating if the model was successfully loaded from db.
 func (bm *BaseModel) Loaded() bool {
 	return bm.isLoaded
