@@ -35,3 +35,7 @@ func (cl *CommandList) SetLoaded() {
 func (cl *CommandList) GetList() interface{} {
 	return cl.List
 }
+
+func (cl *CommandList) Loaded() bool {
+	return len(cl.List) > 0
+}

@@ -5,4 +5,5 @@ package dataful
 type ModelList interface {
 	SetLoaded()
 	GetList() interface{}
+	Loaded() bool
 }

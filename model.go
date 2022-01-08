@@ -12,6 +12,7 @@ type Model interface {
 	Updated()
 	SetID(id interface{})
 	SetLoaded(loaded bool)
+	SetR(r Repository)
 }
 
 //BaseModel includes fields shared by all models.
