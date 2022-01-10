@@ -39,6 +39,14 @@ func (c *Command) Create(ctx context.Context) error {
 	return c.R().InsertOne(ctx, c)
 }
 
+func (c *Command) Update(ctx context.Context) error {
+	return c.R().ReplaceOne(ctx, bson.M{"_id": c.ID}, c)
+}
+
 func (c *Command) Delete(ctx context.Context) error {
 	return c.R().DeleteOne(ctx, bson.M{"_id": c.ID})
+}
+
+func (c *Command) LoadBylId(ctx context.Context, id primitive.ObjectID) error {
+	return c.R().FindOne(ctx, bson.M{"_id": id}, c)
 }
