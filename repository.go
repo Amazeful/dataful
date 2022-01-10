@@ -58,6 +58,7 @@ func (r *MongoRepository) FindAll(ctx context.Context, filter bson.M, list Model
 
 //ReplaceOne replaced one document in db.
 func (r *MongoRepository) ReplaceOne(ctx context.Context, filter bson.M, replacement Model, opts ...*options.ReplaceOptions) error {
+	replacement.Updated()
 	updateResult, err := r.c.ReplaceOne(ctx, filter, replacement, opts...)
 	if err != nil {
 		return err
@@ -70,6 +71,7 @@ func (r *MongoRepository) ReplaceOne(ctx context.Context, filter bson.M, replace
 
 //InsertOne inserts one model to db.
 func (r *MongoRepository) InsertOne(ctx context.Context, document Model, opts ...*options.InsertOneOptions) error {
+	document.Created()
 	insertResult, err := r.c.InsertOne(ctx, document, opts...)
 	if err != nil {
 		return err

@@ -19,10 +19,10 @@ type Command struct {
 	Role       embeddables.UserRole          `bson:"role" json:"role"`
 	Stream     embeddables.StreamStatus      `bson:"stream" json:"stream"`
 	Response   string                        `bson:"response" json:"response"`
-	Aliases    []string                      `bson:"aliases,omitempty" json:"aliases"`
+	Aliases    []string                      `bson:"aliases" json:"aliases"`
 	HasVar     bool                          `bson:"hasVar" json:"-"`
-	Attributes embeddables.CommandAttributes `bson:"attributes,omitempty" json:"attributes"`
-	Timer      embeddables.Timer             `bson:"timer,omitempty" json:"timer"`
+	Attributes embeddables.CommandAttributes `bson:"attributes" json:"attributes"`
+	Timer      embeddables.Timer             `bson:"timer" json:"timer"`
 }
 
 func NewCommand(r dataful.Repository) *Command {
