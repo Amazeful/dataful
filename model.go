@@ -11,6 +11,7 @@ type Model interface {
 	Created()
 	Updated()
 	SetID(id interface{})
+	GetId() primitive.ObjectID
 	SetLoaded(loaded bool)
 	SetR(r Repository)
 }
@@ -49,6 +50,11 @@ func (bm *BaseModel) Updated() {
 //SetId sets the object id field of the model.
 func (bm *BaseModel) SetID(id interface{}) {
 	bm.ID = id.(primitive.ObjectID)
+}
+
+//GetId gets the object id field of the model.
+func (bm *BaseModel) GetId() primitive.ObjectID {
+	return bm.ID
 }
 
 //SetLoaded sets a model's loaded flag.
