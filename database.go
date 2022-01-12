@@ -58,73 +58,49 @@ func (db *MongoDB) Repository(dbName DBName, col Collection) Repository {
 	return NewRepository(collection)
 }
 
-//CollectionStr returns collection in string type.
-func CollectionStr(collection Collection) string {
-	return string(collection)
-}
+var dbSetupData = []struct {
+	db      DBName
+	col     Collection
+	indexes []mongo.IndexModel
+}{
+	// ==============================|| AMAZEFULDB ||============================== //
 
-//DbStr returns database name in string type.
-func DbStr(database DBName) string {
-	return string(database)
+	//Alerts
+	{DBAmazeful, CollectionAlerts, []mongo.IndexModel{{Keys: bson.M{"channel": 1}, Options: options.Index().SetUnique(true)}}},
+
+	//Channel
+	{DBAmazeful, CollectionChannel, []mongo.IndexModel{{Keys: bson.M{"channelId": 1}, Options: options.Index().SetUnique(true)}, {Keys: bson.M{"broadcasterName": 1}}, {Keys: bson.M{"joined": 1}}}},
+
+	//Command
+	{DBAmazeful, CollectionCommand, []mongo.IndexModel{{Keys: bson.D{{"channel", 1}, {"name", 1}}, Options: options.Index().SetUnique(true)}}},
+
+	//Filters
+	{DBAmazeful, CollectionFilters, []mongo.IndexModel{{Keys: bson.M{"channel": 1}, Options: options.Index().SetUnique(true)}}},
+
+	//Purge
+	{DBAmazeful, CollectionFilters, []mongo.IndexModel{{Keys: bson.M{"channel": 1}, Options: options.Index().SetUnique(true)}}},
+
+	//User
+	{DBAmazeful, CollectionUser, []mongo.IndexModel{{Keys: bson.M{"userId": 1}, Options: options.Index().SetUnique(true)}, {Keys: bson.M{"login": 1}}, {Keys: bson.M{"admin": 1}}}},
 }
 
 //createCollectionsAndIndexes creates all collections and ensures indexes are added in.
 func createCollectionsAndIndexes(ctx context.Context, c *mongo.Client) error {
-	// ==============================|| AMAZEFULDB ||============================== //
-	amazefulDB := c.Database(DbStr(DBAmazeful))
-
-	//Alerts
-	_, err := amazefulDB.Collection(CollectionStr(CollectionAlerts)).Indexes().CreateMany(ctx, []mongo.IndexModel{
-		{Keys: bson.M{"channel": 1}, Options: options.Index().SetUnique(true)},
-	})
-	if err != nil {
-		return err
+	var err error
+	for _, s := range dbSetupData {
+		if s.indexes == nil {
+			//only if no indexes
+			err = c.Database(string(s.db)).CreateCollection(ctx, string(s.col))
+			if err != nil {
+				return err
+			}
+		} else {
+			//Calling create indexes will automatically create collection if DNE
+			_, err = c.Database(string(s.db)).Collection(string(s.col)).Indexes().CreateMany(ctx, s.indexes)
+			if err != nil {
+				return err
+			}
+		}
 	}
-
-	//Channel
-	_, err = amazefulDB.Collection(CollectionStr(CollectionChannel)).Indexes().CreateMany(ctx, []mongo.IndexModel{
-		{Keys: bson.M{"channelId": 1}, Options: options.Index().SetUnique(true)},
-		{Keys: bson.M{"broadcasterName": 1}},
-		{Keys: bson.M{"joined": 1}},
-	})
-	if err != nil {
-		return err
-	}
-
-	//Command
-	_, err = amazefulDB.Collection(CollectionStr(CollectionCommand)).Indexes().CreateMany(ctx, []mongo.IndexModel{
-		{Keys: bson.D{{"channel", 1}, {"name", 1}}, Options: options.Index().SetUnique(true)},
-	})
-	if err != nil {
-		return err
-	}
-
-	//Filters
-	_, err = amazefulDB.Collection(CollectionStr(CollectionFilters)).Indexes().CreateMany(ctx, []mongo.IndexModel{
-		{Keys: bson.M{"channel": 1}, Options: options.Index().SetUnique(true)},
-	})
-	if err != nil {
-		return err
-	}
-
-	//Purge
-	_, err = amazefulDB.Collection(CollectionStr(CollectionPurge)).Indexes().CreateMany(ctx, []mongo.IndexModel{
-		{Keys: bson.M{"channel": 1}, Options: options.Index().SetUnique(true)},
-	})
-	if err != nil {
-		return err
-	}
-
-	//User
-	_, err = amazefulDB.Collection(CollectionStr(CollectionUser)).Indexes().CreateMany(ctx, []mongo.IndexModel{
-		{Keys: bson.M{"userId": 1}, Options: options.Index().SetUnique(true)},
-		{Keys: bson.M{"login": 1}},
-		{Keys: bson.M{"admin": 1}},
-	})
-	if err != nil {
-		return err
-	}
-
 	return nil
-
 }
